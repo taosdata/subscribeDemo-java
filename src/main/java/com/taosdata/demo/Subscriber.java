@@ -2,6 +2,7 @@ package com.taosdata.demo;
 
 import com.taosdata.jdbc.tmq.ConsumerRecords;
 import com.taosdata.jdbc.tmq.TaosConsumer;
+import com.taosdata.jdbc.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -17,7 +18,12 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -26,6 +32,8 @@ public class Subscriber implements CommandLineRunner {
 
     @Value("${topicName}")
     private String topicName;
+    @Value("${timestampPrecision}")
+    private String precision;
     @Value("${pollingInterval}")
     private int pollingInterval;
     @Value("${dataFile}")
@@ -148,9 +156,36 @@ public class Subscriber implements CommandLineRunner {
                 continue;
             Method readMethod = descriptor.getReadMethod();
             Object value = readMethod.invoke(record);
+            if (index == 0) {
+                value = formatTimestamp(value, precision);
+            }
             line[index] = value == null ? "NULL" : value.toString();
         }
         return String.join("\t", line);
+    }
+
+    public Object formatTimestamp(Object value, String precision) {
+        if (value instanceof Long) {
+            Long ts = (Long) value;
+            if ("ms".equalsIgnoreCase(precision)) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                return sdf.format(new Date(ts));
+            }
+            if ("us".equalsIgnoreCase(precision)) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+                return formatter.format(LocalDateTime.ofEpochSecond(ts / 1000_000, (int) (ts % 1000_000) * 1000,
+                        OffsetDateTime.now().getOffset()));
+            }
+            if ("ns".equalsIgnoreCase(precision)) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSSSSS");
+                return formatter.format(LocalDateTime.ofEpochSecond(ts / 1000_000_000, (int) (ts % 1000_000_000),
+                        OffsetDateTime.now().getOffset()));
+            }
+        }
+        if (value instanceof Timestamp) {
+            return Utils.formatTimestamp((Timestamp) value);
+        }
+        return value;
     }
 
     private int getIndex(String fieldName) {
