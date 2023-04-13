@@ -2,29 +2,20 @@ package com.taosdata.demo;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+
 public class DynamicRecordUtilTest {
-    @Value("${schemaConfig}")
-    private String schemaTxt;
+    String schema = "long ts; int c1; float c2;";
 
     @Test
     public void getDynamicRecordClass() throws Exception {
         // given
-        String schema = new String(Files.readAllBytes(Paths.get(schemaTxt)));
         DynamicRecordUtil util = new DynamicRecordUtil();
         // when
         Class<?> clazz = util.getDynamicRecordClass(schema);
@@ -50,8 +41,7 @@ public class DynamicRecordUtilTest {
     public void getDynamicRecordDeserializer() throws Exception {
         // given
         DynamicRecordUtil util = new DynamicRecordUtil();
-        String schema = new String(Files.readAllBytes(Paths.get(schemaTxt)));
-        Class<?> clazz = util.getDynamicRecordClass(schema);
+        Class<?> clazz = Class.forName("com.taosdata.jdbc.tmq.ReferenceDeserializer");
 
         // when
         Class<?> deserializer = util.getDynamicRecordDeserializer(clazz);

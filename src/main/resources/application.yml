@@ -1,5 +1,6 @@
+topicName: subscribeDemo
+timestampPrecision: ms
+pollingInterval: 1000
 dataFile: ./data.txt
 consumerProperties: ./config/consumer.properties
 schema: ./config/schema.txt
-topicName: subscribeDemo
-pollingInterval: 1000
