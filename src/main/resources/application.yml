@@ -1,4 +1,4 @@
-topicName: subscribeDemo
+topicName: subscribedemo
 timestampPrecision: ms
 pollingInterval: 1000
 dataFile: ./data.txt

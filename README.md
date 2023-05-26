@@ -10,6 +10,11 @@ cd subscribeDemo-java
 
 ## run
 
+### Prerequisite
+
+TDengine 3.0 was installed and running
+
+
 ```shell
 tar -xvf subscribeDemo-java-20230307.tar
 cd subscribeDemo-java

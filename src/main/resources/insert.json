@@ -1,0 +1,73 @@
+{
+    "filetype": "insert",
+    "cfgdir": "/etc/taos",
+    "host": "127.0.0.1",
+    "port": 6030,
+    "user": "root",
+    "password": "taosdata",
+    "connection_pool_size": 8,
+    "thread_count": 8,
+    "create_table_thread_count": 8,
+    "result_file": "./insert_res.txt",
+    "confirm_parameter_prompt": "no",
+    "insert_interval": 0,
+    "interlace_rows": 1,
+    "num_of_records_per_req": 5 ,
+    "prepared_rand": 10000,
+    "chinese": "no",
+    "databases": [
+        {
+            "dbinfo": {
+                "name": "test",
+                "drop": "yes",
+                "replica": 1,
+                "precision": "ms",
+                "keep": 3650,
+                "minRows": 100,
+                "maxRows": 4096,
+		"wal_retention_period": 7200,
+                "comp": 2,
+                "vgroups ":2,
+                "duration":10
+            },
+            "super_tables": [
+                {
+                    "name": "meters",
+                    "child_table_exists": "yes",
+                    "childtable_count": 30,
+                    "childtable_prefix": "d_",
+                    "escape_character": "yes",
+                    "auto_create_table": "no",
+                    "batch_create_tbl_num": 10,
+                    "data_source": "rand",
+                    "insert_mode": "taosc",
+                    "non_stop_mode": "no",
+                    "insert_rows": 3600,
+                    "childtable_exists":"no",
+                    "childtable_limit": 1000000,
+                    "childtable_offset": 0,
+                    "interlace_rows": 1,
+                    "insert_interval": 1000,
+                    "partial_col_num": 0,
+                    "disorder_ratio": 0,
+                    "disorder_range": 0,
+                    "timestamp_step": 1000,
+                    "start_timestamp": "now",
+                    "sample_format": "csv",
+                    "sample_file": "./sample.csv",
+                    "use_sample_ts": "no",
+                    "tags_file": "",
+                    "columns": [
+                        { "type": "FLOAT", "name": "current", "count": 1, "max": 12, "min": 8 },
+                        { "type": "INT", "name": "voltage", "max": 225, "min": 215 },
+                        { "type": "FLOAT", "name": "phase", "max": 1, "min": 0 }
+                    ],
+                    "tags": [
+                        { "name": "group_id", "type": "int" },
+                        { "name": "location", "type": "BINARY", "len": 24, "values": ["BJ", "SH", "GZ"] }
+                    ]
+                }
+            ]
+        }
+    ]
+}
