@@ -1,5 +1,6 @@
 package com.taosdata.demo;
 
+import com.taosdata.demo.util.DynamicRecordUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 
-public class DynamicRecordUtilTest {
+public class DynamicRecordTimestampUtilTest {
     String schema = "long ts; int c1; float c2;";
 
     @Test

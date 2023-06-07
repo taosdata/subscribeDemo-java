@@ -1,4 +1,4 @@
-package com.taosdata.demo;
+package com.taosdata.demo.util;
 
 import com.taosdata.jdbc.tmq.ReferenceDeserializer;
 import net.bytebuddy.ByteBuddy;

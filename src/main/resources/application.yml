@@ -1,6 +1,10 @@
-topicName: subscribeDemo
-timestampPrecision: ms
-pollingInterval: 1000
-dataFile: ./data.txt
-consumerProperties: ./config/consumer.properties
-schema: ./config/schema.txt
+subscriber:
+  topic-names: tp1,tp2,tp3
+  poll-timeout: 1000
+  output-file: ./data.txt
+  consumer-properties-file: ./consumer.properties
+record-formatter:
+  type: csv
+  csv:
+    delimiter: '\t'
+    with-title: false
