@@ -72,9 +72,10 @@ public class Subscriber implements CommandLineRunner {
             log.info(offsetsInfo("subscription created"));
 
             List<PartitionOffset> offsets = seekToPartitionOffsets.getOffsets();
-            if (offsets != null && !offsets.isEmpty())
+            if (offsets != null && !offsets.isEmpty()) {
                 seekTo(seekToPartitionOffsets.getOffsets());
-            printOffsets("after seek");
+                printOffsets("after seek");
+            }
 
             int count = 0;
             while (true) {
@@ -82,10 +83,11 @@ public class Subscriber implements CommandLineRunner {
                 try {
                     ConsumerRecords<Map<String, Object>> records = consumer.poll(Duration.ofMillis(pollTimeout));
                     for (ConsumerRecord<Map<String, Object>> record : records) {
+                        String line = formatter.format(record);
                         if (printDataInLog) {
-                            log.info(formatter.format(record));
+                            log.info(line);
                         }
-                        writer.println(formatter.format(record));
+                        writer.println(line);
                         writer.flush();
                     }
                 } catch (SQLException e) {
