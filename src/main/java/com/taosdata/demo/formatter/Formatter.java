@@ -1,8 +1,10 @@
 package com.taosdata.demo.formatter;
 
+import com.taosdata.jdbc.tmq.ConsumerRecord;
+
 import java.util.Map;
 
 public interface Formatter {
 
-    String format(Map<String, Object> record);
+    String format(ConsumerRecord<Map<String, Object>> record);
 }

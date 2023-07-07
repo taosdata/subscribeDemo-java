@@ -1,8 +1,7 @@
 package com.taosdata.demo.deserializer;
 
 import com.taosdata.demo.entity.RecordMap;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -10,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -71,12 +71,12 @@ public class NewMapDeserializerTest {
 
         // when
         NewMapDeserializer d = new NewMapDeserializer();
-        Map<String, Object> actual = d.deserialize(resultSet);
+        Map<String, Object> actual = d.deserialize(resultSet, null, null);
 
         // then
-        Map<String, Object> expected = RecordMap.m;
+        Map<String, Object> expected = RecordMap.value;
         for (String key : expected.keySet()) {
-            Assert.assertEquals(expected.get(key), actual.get(key));
+            assertEquals(expected.get(key), actual.get(key));
         }
     }
 

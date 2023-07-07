@@ -16,13 +16,25 @@ cd subscribeDemo-java
 bin/start.sh
 ```
 
-## feature
+## change log
 
-```text
-### 2023-06-06 refactor
+### 2023-07-07
+
+1. parameter `record-formatter.with-partition-offset`: boolean, output 'dbName, topic, vGroupId, offset' when this
+   parameter is true
+2. parameter `subscriber.print-data-in-log`: boolean, print the data consumed in log when this parameter is true
+3. parameter `subscriber.print-offset-in-log`: boolean, print the offset consumed in log when this parameter is true
+4. parameter `subscriber.commit-after-poll`: boolean, commit the offset after poll when this parameter is true
+5. parameter `subscriber.seek-to.offsets`: seek to the specified offset after consumer.subscribe() called
+6. print all configurations on when log level is debug 
+7. fix: no test cases run, use junit5 instead of junit4 
+8. use fastjson-2.0.34 instead of fastjson-2.0.33 
+9. use taos-jdbcdriver-3.2.4 instead of taos-jdbcdriver-3.1.0 
+10. remove byte-buddy library
+
+### 2023-06-06
+
 1. Deprecated schema.txt, deprecated Class generation using bytebuddy library
-2. parameter record-formatter.type: Support json, csv, kv (key value) three formats, output format, default is kv
-3. parameter record-formatter.csv.delimiter: char, the csv separator, default is '\t'
-4. parameter record-formatter.csv.with-title: boolean, whether to output a title, default is false
-```
-
+2. parameter `record-formatter.type`: Support json, csv, kv (key value) three formats, output format, default is kv
+3. parameter `record-formatter.csv.delimiter`: char, the csv separator, default is '\t'
+4. parameter `record-formatter.csv.with-title`: boolean, whether to output a title, default is false
