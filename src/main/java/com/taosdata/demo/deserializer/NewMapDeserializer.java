@@ -3,6 +3,7 @@ package com.taosdata.demo.deserializer;
 import com.taosdata.demo.util.TimestampUtil;
 import com.taosdata.jdbc.tmq.Deserializer;
 import com.taosdata.jdbc.tmq.DeserializerException;
+import lombok.Getter;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -16,7 +17,9 @@ public class NewMapDeserializer implements Deserializer<Map<String, Object>> {
     public static final String TIMESTAMP_FORMAT = "deserializer.timestamp.format";
     public static final String TIMESTAMP_PRECISION = "deserializer.timestamp.precision";
 
+    @Getter
     private String timestampFormat = "long";
+    @Getter
     private String timestampPrecision = "ms";
 
     @Override
@@ -30,7 +33,8 @@ public class NewMapDeserializer implements Deserializer<Map<String, Object>> {
     }
 
     @Override
-    public Map<String, Object> deserialize(ResultSet data) throws DeserializerException, SQLException {
+    public Map<String, Object> deserialize(ResultSet data, String topic,
+            String dbName) throws DeserializerException, SQLException {
         Map<String, Object> map = new LinkedHashMap<>();
 
         ResultSetMetaData metaData = data.getMetaData();

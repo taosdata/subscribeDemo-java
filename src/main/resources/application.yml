@@ -2,9 +2,24 @@ subscriber:
   topic-names: tp1,tp2,tp3
   poll-timeout: 1000
   output-file: ./data.txt
+  print-data-in-log: false
+  print-offset-in-log: false
+  commit-after-poll: false
+#  seek-to:
+#    offsets:
+#      - topic: tp1
+#        vGroupId: 21
+#        offset: 0
+#      - topic: tp2
+#        vGroupId: 21
+#        offset: 0
   consumer-properties-file: ./consumer.properties
 record-formatter:
   type: csv
+  with-partition-offset: true
   csv:
     delimiter: '\t'
     with-title: false
+logging:
+  level:
+    com.taosdata.demo: info
