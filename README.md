@@ -18,6 +18,11 @@ bin/start.sh
 
 ## change log
 
+### 2023-07-13
+
+1. deserializer parameter `deserializer.binary.as.string`: boolean, whether to output binary data as string, default is
+   true
+
 ### 2023-07-07
 
 1. parameter `record-formatter.with-partition-offset`: boolean, output 'dbName, topic, vGroupId, offset' when this
@@ -26,10 +31,10 @@ bin/start.sh
 3. parameter `subscriber.print-offset-in-log`: boolean, print the offset consumed in log when this parameter is true
 4. parameter `subscriber.commit-after-poll`: boolean, commit the offset after poll when this parameter is true
 5. parameter `subscriber.seek-to.offsets`: seek to the specified offset after consumer.subscribe() called
-6. print all configurations on when log level is debug 
-7. fix: no test cases run, use junit5 instead of junit4 
-8. use fastjson-2.0.34 instead of fastjson-2.0.33 
-9. use taos-jdbcdriver-3.2.4 instead of taos-jdbcdriver-3.1.0 
+6. print all configurations on when log level is debug
+7. fix: no test cases run, use junit5 instead of junit4
+8. use fastjson-2.0.34 instead of fastjson-2.0.33
+9. use taos-jdbcdriver-3.2.4 instead of taos-jdbcdriver-3.1.0
 10. remove byte-buddy library
 
 ### 2023-06-06
