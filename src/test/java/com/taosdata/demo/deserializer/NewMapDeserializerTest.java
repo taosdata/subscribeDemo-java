@@ -66,7 +66,8 @@ public class NewMapDeserializerTest {
         when(resultSet.getObject("f10")).thenReturn(10L);
         when(resultSet.getObject("f11")).thenReturn(11.11f);
         when(resultSet.getObject("f12")).thenReturn(12.2222d);
-        when(resultSet.getObject("f13")).thenReturn("abc");
+        when(resultSet.getObject("f13")).thenReturn("abc".getBytes());
+        when(resultSet.getString("f13")).thenReturn("abc");
         when(resultSet.getObject("f14")).thenReturn("北京");
 
         // when
