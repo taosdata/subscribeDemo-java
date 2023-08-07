@@ -17,6 +17,10 @@ bin/start.sh
 ```
 
 ## change log
+### 2023-08-07
+
+1. deserializer parameter `deserializer.calculate.latency`: boolean, whether to calculate latency, default is 
+   false#TS-3783
 
 ### 2023-07-13
 
