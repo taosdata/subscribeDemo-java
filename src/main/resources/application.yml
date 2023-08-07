@@ -19,7 +19,7 @@ record-formatter:
   with-partition-offset: true
   csv:
     delimiter: '\t'
-    with-title: false
+    with-title: true
 logging:
   level:
     com.taosdata.demo: info

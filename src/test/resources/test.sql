@@ -1,0 +1,13 @@
+drop topic if exists tp1;
+drop topic if exists tp2;
+drop topic if exists tp3;
+drop database if exists subscribe_demo_java;
+create database if not exists subscribe_demo_java WAL_RETENTION_PERIOD 3650 PRECISION 'ms';
+use subscribe_demo_java;
+create table stb(ts timestamp, f1 int, f2 float, f3 binary(100)) tags(t1 int);
+insert into tb1 using stb tags(1) values(now, 1, 1.1, "hello")(now + 1s, 2, 2.22, "world")(now + 2s,3,3.333, "tdengine");
+insert into tb2 using stb tags(2) values(now, 1, 1.1, "hello")(now + 1s, 2, 2.22, "world")(now + 2s,3, 3.333,"tdengine");
+insert into tb3 using stb tags(3) values(now, 1, 1.1, "hello")(now + 1s, 2, 2.22, "world")(now + 2s,3, 3.333, "tdengine");
+create topic tp1 as select * from stb where t1 = 1;
+create topic tp2 as select * from stb where t1 = 2;
+create topic tp3 as select * from stb where t1 = 3;
