@@ -28,7 +28,7 @@ public class TimestampUtil {
         if (ts instanceof Timestamp) {
             return format((Timestamp) ts, precision);
         }
-        return ts.toString();
+        return String.valueOf(ts);
     }
 
     public static String format(Timestamp ts, String precision) {
