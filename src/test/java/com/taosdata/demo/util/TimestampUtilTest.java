@@ -42,6 +42,10 @@ public class TimestampUtilTest {
 
         actual = TimestampUtil.format(ts3, "ns");
         assertEquals("2023-03-08 11:34:09.579123456", actual);
+
+        Object a = null;
+        actual = TimestampUtil.format(a, "ms");
+        assertEquals("null", actual);
     }
 
     @Test
