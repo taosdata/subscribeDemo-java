@@ -1,4 +1,5 @@
 subscriber:
+  concurrency: 1
   topic-names: tp1,tp2,tp3
   poll-timeout: 1000
   output-file: ./data.txt
