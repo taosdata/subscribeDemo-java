@@ -17,8 +17,12 @@ import javax.annotation.Resource;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Component
@@ -36,6 +40,8 @@ public class Subscriber implements CommandLineRunner {
     private boolean printOffsetInLog;
     @Value("${subscriber.commit-after-poll}")
     private boolean commitAfterPoll;
+    @Value("${subscriber.concurrency}")
+    private int concurrency;
 
     @Resource
     private Formatter formatter;
@@ -43,43 +49,61 @@ public class Subscriber implements CommandLineRunner {
     private SeekToPartitionOffsets seekToPartitionOffsets;
     @Resource
     private PrintWriter writer;
-    private TaosConsumer<Map<String, Object>> consumer;
+
+    //private TaosConsumer<Map<String, Object>> consumer;
 
     @Override
     public void run(String... args) throws Exception {
         Properties properties;
         try {
-            log.info("consumer.properties path: " + consumerConfigFile);
+            log.info("consumer.properties path: {}", consumerConfigFile);
             properties = ConsumerPropertyLoader.load(consumerConfigFile);
-            log.info("consumer.properties: " + properties);
+            log.info("consumer.properties: {}", properties);
         } catch (Exception e) {
             throw new Exception("failed to load properties: ,cause: " + e.getMessage(), e);
         }
 
-        try {
-            consume(properties);
-        } catch (Exception e) {
-            throw new Exception(
-                    "failed to consume topics: " + Arrays.toString(topicNames) + ", cause: " + e.getMessage(), e);
+        List<Thread> consumerList = IntStream.range(0, concurrency).mapToObj(i -> {
+            Thread t = new Thread(() -> {
+                log.info("{} start to consume topics: {}", Thread.currentThread().getName(),
+                        Arrays.toString(topicNames));
+                try {
+                    consume(properties);
+                } catch (Exception e) {
+                    throw new RuntimeException(
+                            "failed to consume topics: " + Arrays.toString(topicNames) + ", cause: " + e.getMessage(),
+                            e);
+                }
+                log.info("{} stop to consume topics: {}", Thread.currentThread().getName(),
+                        Arrays.toString(topicNames));
+            });
+            return t;
+        }).collect(Collectors.toList());
+
+        consumerList.forEach(Thread::start);
+
+        for (Thread t : consumerList) {
+            t.join();
         }
     }
 
     private void consume(Properties properties) throws Exception {
+        TaosConsumer<Map<String, Object>> consumer = null;
         try {
             consumer = new TaosConsumer<>(properties);
 
             consumer.subscribe(Arrays.asList(topicNames));
-            log.info(offsetsInfo("subscription created"));
+            log.info(offsetsInfo(consumer, "subscription created"));
 
             List<PartitionOffset> offsets = seekToPartitionOffsets.getOffsets();
             if (offsets != null && !offsets.isEmpty()) {
-                seekTo(seekToPartitionOffsets.getOffsets());
-                printOffsets("after seek");
+                seekTo(consumer, seekToPartitionOffsets.getOffsets());
+                printOffsets(consumer, "after seek");
             }
 
             int count = 0;
             while (true) {
-                printOffsets("before poll(" + count + ")");
+                printOffsets(consumer, "before poll(" + count + ")");
                 try {
                     ConsumerRecords<Map<String, Object>> records = consumer.poll(Duration.ofMillis(pollTimeout));
                     for (ConsumerRecord<Map<String, Object>> record : records) {
@@ -93,11 +117,11 @@ public class Subscriber implements CommandLineRunner {
                 } catch (SQLException e) {
                     throw new Exception("failed to poll from database cause: " + e.getMessage(), e);
                 }
-                printOffsets("after poll(" + count + ")");
+                printOffsets(consumer, "after poll(" + count + ")");
 
                 if (commitAfterPoll) {
                     consumer.commitSync();
-                    printOffsets("after commit(" + count + ")");
+                    printOffsets(consumer, "after commit(" + count + ")");
                 }
 
                 count++;
@@ -110,7 +134,7 @@ public class Subscriber implements CommandLineRunner {
         }
     }
 
-    private void seekTo(List<PartitionOffset> offsets) throws Exception {
+    private void seekTo(TaosConsumer<Map<String, Object>> consumer, List<PartitionOffset> offsets) throws Exception {
         offsets = offsets.stream().filter(i -> {
             boolean contains = Arrays.asList(topicNames).contains(i.getTopic());
             if (!contains) {
@@ -129,13 +153,13 @@ public class Subscriber implements CommandLineRunner {
         }
     }
 
-    private void printOffsets(String message) throws SQLException {
+    private void printOffsets(TaosConsumer<Map<String, Object>> consumer, String message) throws SQLException {
         if (!printOffsetInLog)
             return;
-        log.info(offsetsInfo(message));
+        log.info(offsetsInfo(consumer, message));
     }
 
-    private String offsetsInfo(String message) throws SQLException {
+    private String offsetsInfo(TaosConsumer<Map<String, Object>> consumer, String message) throws SQLException {
         StringBuilder sb = new StringBuilder(message + " => ");
         for (String topic : topicNames) {
             Map<Integer, Long> begin = consumer.beginningOffsets(topic)

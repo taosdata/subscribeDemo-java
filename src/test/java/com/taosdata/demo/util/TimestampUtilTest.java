@@ -1,9 +1,11 @@
 package com.taosdata.demo.util;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -68,5 +70,10 @@ public class TimestampUtilTest {
 
         actual = TimestampUtil.format(1678246449579123456L, "ns");
         assertEquals("2023-03-08 11:34:09.579123456", actual);
+    }
+
+    @BeforeEach
+    public void setUp() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
     }
 }
