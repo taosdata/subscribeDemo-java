@@ -17,6 +17,10 @@ bin/start.sh
 ```
 
 ## change log
+
+### 2024-04-28
+1. add parameter `subscriber.concurrency`: int, the number of threads to consume data, default is 1 #TD-4684
+
 ### 2023-08-07
 
 1. deserializer parameter `deserializer.calculate.latency`: boolean, whether to calculate latency, default is 
