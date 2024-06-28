@@ -1,26 +1,41 @@
 subscriber:
+  # consumer 的并发
   concurrency: 1
+  # 要订阅哪些topic，以逗号分隔
   topic-names: tp1,tp2,tp3
+  # 每次 pull 的超时时间
   poll-timeout: 1000
+  # pull 以后，写到一个文件里
   output-file: ./data.txt
+  # 是否在log 里面打印数据
   print-data-in-log: false
+  # 是否在log里打印数据的offset
   print-offset-in-log: false
+  # 是否在pull以后执行commit
   commit-after-poll: false
-#  seek-to:
-#    offsets:
-#      - topic: tp1
-#        vGroupId: 21
-#        offset: 0
-#      - topic: tp2
-#        vGroupId: 21
-#        offset: 0
+  # 要不要在一开始执行seek，可以指seek 到指定的offset
+  #  seek-to:
+  #    offsets:
+  #      - topic: tp1
+  #        vGroupId: 21
+  #        offset: 0
+  #      - topic: tp2
+  #        vGroupId: 21
+  #        offset: 0
+  # consumer 的配置
   consumer-properties-file: ./consumer.properties
+# 要把数据格式化成什么形式
 record-formatter:
+  # 支持：csv, json, keyvalue
   type: csv
+  # 格式里是否带 partition 和 offset 这2列
   with-partition-offset: true
   csv:
+    # 分隔符
     delimiter: '\t'
+    # 是否带首行
     with-title: true
+# 日志等级
 logging:
   level:
     com.taosdata.demo: info
