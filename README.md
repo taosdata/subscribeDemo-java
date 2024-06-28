@@ -16,6 +16,10 @@ cd subscribeDemo-java
 bin/start.sh
 ```
 
+## config
+edit the `config/application.yml` and `consumer.properties` to change the configuration
+
+
 ## change log
 
 ### 2024-04-28
