@@ -32,6 +32,8 @@ public class Subscriber implements CommandLineRunner {
     private String consumerConfigFile;
     @Value("${subscriber.topic-names}")
     private String[] topicNames;
+    @Value("${subscriber.timeout}")
+    private String timeout;
     @Value("${subscriber.poll-timeout}")
     private int pollTimeout;
     @Value("${subscriber.print-data-in-log: false}")
@@ -102,10 +104,20 @@ public class Subscriber implements CommandLineRunner {
             }
 
             int count = 0;
+            long start = System.currentTimeMillis();
+            long timeout_in_milli = Long.MAX_VALUE;
+            try {
+                timeout_in_milli = Long.parseLong(timeout);
+            } catch (Exception e) {
+                log.warn("failed to parse timeout: {}, use default: {}", timeout, timeout_in_milli);
+            }
             while (true) {
                 printOffsets(consumer, "before poll(" + count + ")");
                 try {
                     ConsumerRecords<Map<String, Object>> records = consumer.poll(Duration.ofMillis(pollTimeout));
+                    if (records.isEmpty() && System.currentTimeMillis() - start > timeout_in_milli) {
+                        break;
+                    }
                     for (ConsumerRecord<Map<String, Object>> record : records) {
                         String line = formatter.format(record);
                         if (printDataInLog) {

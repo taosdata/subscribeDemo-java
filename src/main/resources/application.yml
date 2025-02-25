@@ -3,6 +3,8 @@ subscriber:
   concurrency: 1
   # 要订阅哪些topic，以逗号分隔
   topic-names: tp1,tp2,tp3
+  # 订阅超时，超过这个时间没有订阅到数据就会退出
+  timeout: 5000
   # 每次 pull 的超时时间
   poll-timeout: 1000
   # pull 以后，写到一个文件里
