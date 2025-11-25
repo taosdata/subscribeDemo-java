@@ -1,5 +1,6 @@
 package com.taosdata.demo.entity;
 
+import com.taosdata.jdbc.enums.TmqMessageType;
 import com.taosdata.jdbc.tmq.ConsumerRecord;
 
 import java.util.LinkedHashMap;
@@ -25,5 +26,15 @@ public class RecordMap {
         value.put("f14", "北京");
     }
 
-    public static ConsumerRecord<Map<String, Object>> m = new ConsumerRecord<>("topicName", "dbName", 1, 1, value);
+    public static ConsumerRecord<Map<String, Object>> m;
+    static {
+        m = new ConsumerRecord.Builder<Map<String, Object>>()
+                .topic("topicName")
+                .dbName("dbName")
+                .vGroupId(1)
+                .offset(1L)
+                .messageType(TmqMessageType.TMQ_RES_DATA)
+                .value(value)
+                .build();
+    }
 }
